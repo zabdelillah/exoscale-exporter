@@ -25,6 +25,7 @@ jobs:
       run: go build -o exoscale-exporter -v ./
 
     - name: Upload artifact
+      uses: softprops/action-gh-release@v1
       with:
         files: exoscale-exporter
     # - name: Test
