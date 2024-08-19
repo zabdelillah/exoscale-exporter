@@ -14,7 +14,10 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
     - uses: actions/checkout@v4
 
@@ -24,7 +27,7 @@ jobs:
         go-version: '1.22.6'
 
     - name: Build
-      run: go build -o exoscale-exporter -v ./
+      run: go build -o exoscale-exporter-${{ matrix.os }} -v ./
 
     - name: Upload artifact
       uses: softprops/action-gh-release@v1
