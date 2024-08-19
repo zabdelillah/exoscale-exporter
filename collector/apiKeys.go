@@ -10,7 +10,6 @@ import (
 type APIKeysPrometheusMetricsCollector struct {
 	Context context.Context
 	Client v3.Client
-	Count *prometheus.Desc
 	Key *prometheus.Desc
 }
 
@@ -18,11 +17,6 @@ func NewAPIKeysPrometheusMetricsCollector(ctx context.Context, cli v3.Client) *A
 	return &APIKeysPrometheusMetricsCollector{
 		Context: ctx,
 		Client: cli,
-		// Count: prometheus.NewDesc(
-		// 	"exoscale_iam_key_count",
-		// 	"Amount of snapshots",
-		// 	nil, nil,
-		// ),
 		Key: prometheus.NewDesc(
 			"exoscale_iam_key",
 			"Exoscale IAM Key",

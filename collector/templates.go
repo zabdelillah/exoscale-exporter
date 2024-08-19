@@ -19,11 +19,6 @@ func NewTemplatesPrometheusMetricsCollector(ctx context.Context, cli v3.Client) 
     return &TemplatesPrometheusMetricsCollector{
         Context: ctx,
         Client: cli,
-        Template: prometheus.NewDesc(
-            "exoscale_snapshot_size",
-            "Exoscale Storage Template",
-            metadata, nil,
-        ),
         Volume: prometheus.NewDesc(
             "exoscale_volume_size",
             "Exoscale Storage Template",
@@ -33,7 +28,7 @@ func NewTemplatesPrometheusMetricsCollector(ctx context.Context, cli v3.Client) 
 }
 
 func (collector *TemplatesPrometheusMetricsCollector) Describe(channel chan<- *prometheus.Desc) {
-    channel <- collector.Template
+    channel <- collector.Volume
 }
 
 func (collector *TemplatesPrometheusMetricsCollector) Collect(channel chan<- prometheus.Metric) {

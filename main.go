@@ -7,8 +7,6 @@ import (
 	"zai.dev/m/v2/collector"
 	"github.com/exoscale/egoscale/v3"
 	"github.com/exoscale/egoscale/v3/credentials"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 	"context"
 	"fmt"
@@ -41,31 +39,7 @@ func main() {
 		panic(fmt.Sprintf("unable to initialize Exoscale API V3 client: %v", err))
 	}
 
-	/**
-	 * Each collector follows the same structure of containing the required functions;
-	 * 	- Describe()
-	 * 	- Collect()
-	 * 	
-	 * 	Each resource will hold a counter metric, incrementing on each one found and post-fixed
-	 * 		by *_count. Every metric will be prefixed with exoscale_*, resulting in the
-	 * 		naming convention of exoscale_<resource>_<metric>.
-	 */
-	registry := prometheus.NewRegistry()
-	// Go Application Metrics
-	registry.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
-	registry.MustRegister(prometheus.NewGoCollector())
-	// Exoscale Organization-Level Metrics
-	registry.MustRegister(collector.NewOrganizationPrometheusMetricsCollector(ctx, *exoClient))
-	registry.MustRegister(collector.NewAPIKeysPrometheusMetricsCollector(ctx, *exoClient))
-	// Exoscale Compute Metrics
-	registry.MustRegister(collector.NewInstancesPrometheusMetricsCollector(ctx, *exoClient))
-	registry.MustRegister(collector.NewSKSClusterPrometheusMetricsCollector(ctx, *exoClient))
-	// Exoscale Storage Metrics
-	registry.MustRegister(collector.NewSnapshotsPrometheusMetricsCollector(ctx, *exoClient))
-	registry.MustRegister(collector.NewSOSBucketPrometheusMetricsCollector(ctx, *exoClient))
-	registry.MustRegister(collector.NewTemplatesPrometheusMetricsCollector(ctx, *exoClient))
-	
-	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	collector.PrepareCollector(ctx, exoClient)
 
 	http.ListenAndServe(port, nil)
 }
