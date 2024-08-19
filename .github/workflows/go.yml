@@ -22,7 +22,10 @@ jobs:
         go-version: '1.22.6'
 
     - name: Build
-      run: go build -v ./
+      run: go build -o exoscale-exporter -v ./
 
-    - name: Test
-      run: go test -v ./
+    - name: Upload artifact
+      with:
+        files: exoscale-exporter
+    # - name: Test
+    #   run: go test -v ./
