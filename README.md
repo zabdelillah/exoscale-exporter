@@ -28,9 +28,9 @@ Upon performing a hit to the `/metrics` endpoint, the Exoscale API will be queri
 - [ ] Affinity Groups
 
 ## Repository To-Dos
-- [ ] Tests
-- [ ] Automatic builds
-- [ ] CLI Flags & Configuration File
+- [ ] Complete Unit Tests
+- [-] Automatic builds
+- [-] CLI Flags & Configuration File
 
 ## Metrics
 |   |   |
