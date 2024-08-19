@@ -14,13 +14,19 @@ import (
 	"fmt"
 	"os"
 	"log"
+	"flag"
 )
 
 func main() {
+	var port string
+
+	flag.StringVar(&port, "listen", ":9999", "address and port to listen on")
+	flag.Parse()
+
 	ctx := context.Background()
 	api_key, api_key_exists := os.LookupEnv("EXOSCALE_API_KEY")
 	api_secret, api_secret_exists := os.LookupEnv("EXOSCALE_API_SECRET")
-	
+
 	if !api_key_exists {
 		log.Printf("EXOSCALE_API_KEY not provided")
 	}
@@ -61,5 +67,5 @@ func main() {
 	
 	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 
-	http.ListenAndServe(":9999", nil)
+	http.ListenAndServe(port, nil)
 }
