@@ -14,24 +14,6 @@ import (
 	"strings"
 )
 
-// func tResponse(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	organization := v3.Organization{
-// 		Address: "test addr",
-// 	}
-// 	if err := json.NewEncoder(w).Encode(organization); err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 	}
-// }
-
-	// exoscaleCredentials := 
-	// exoClient, err := v3.NewClient(exoscaleCredentials)
-	// if err != nil {
-	// 	panic(fmt.Sprintf("unable to initialize Exoscale API V3 client: %v", err))
-	// }
-	// exoClient = exoClient.WithEndpoint("http://localhost:9998")
-	// 
-
 var dummyExoscaleCredentials = credentials.NewStaticCredentials("EXO", "EXO")
 var dummyExoscaleClient *v3.Client
 
@@ -66,9 +48,26 @@ func CheckMetricExists(metric string, metrics string) (string, error) {
 	return metric, nil
 }
 
+func CheckMetricsExist(t *testing.T, metricsToCheck []string, metrics string) ([]string, []error) {
+	var notFoundErrors []error
+	var foundMetrics []string
+
+	for i := range(metricsToCheck) {
+        _, err := CheckMetricExists(metricsToCheck[i], metrics)
+        if err != nil {
+            notFoundErrors = append(notFoundErrors, err)
+        } else {
+        	foundMetrics = append(foundMetrics, metricsToCheck[i])
+        }
+    }
+
+    return foundMetrics, notFoundErrors
+}
+
 func setupWebServers(m *testing.M) int {
 	SetupOrganizationTestEndpoints()
 	SetupIAMTestEndpoints()
+	SetupInstanceTestEndpoints()
 
 	PrepareCollector(context.Background(), dummyExoscaleClient)
 
