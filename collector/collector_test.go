@@ -7,8 +7,11 @@ import (
 	"github.com/exoscale/egoscale/v3"
 	"github.com/exoscale/egoscale/v3/credentials"
 	"net/http"
-	// "encoding/json"
+	"encoding/json"
 	"os"
+	"errors"
+	"io/ioutil"
+	"strings"
 )
 
 // func tResponse(w http.ResponseWriter, r *http.Request) {
@@ -32,8 +35,40 @@ import (
 var dummyExoscaleCredentials = credentials.NewStaticCredentials("EXO", "EXO")
 var dummyExoscaleClient *v3.Client
 
+func WriteObjectToResponse(w http.ResponseWriter, r *http.Request, instance interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(instance); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func GetTestMetrics(t *testing.T) string {
+	resp, err := http.Get("http://localhost:9998/metrics")
+    if err != nil {
+        t.Errorf("http.Get() error: %v", err)
+    }
+    defer resp.Body.Close()
+
+    // Read the response body
+    body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        t.Errorf("ioutil.ReadAll() error: %v", err)
+    }
+
+    return string(body)
+}
+
+func CheckMetricExists(metric string, metrics string) (string, error) {
+	if !strings.Contains(metrics, metric) {
+		return "", errors.New(fmt.Sprintf("Metric '%s' not found", metric))
+	}
+
+	return metric, nil
+}
+
 func setupWebServers(m *testing.M) int {
 	SetupOrganizationTestEndpoints()
+	SetupIAMTestEndpoints()
 
 	PrepareCollector(context.Background(), dummyExoscaleClient)
 

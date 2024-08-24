@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"testing"
 	"github.com/exoscale/egoscale/v3"
-	// "github.com/exoscale/egoscale/v3/credentials"
 	"net/http"
 	"encoding/json"
 	"strings"
-	 "io/ioutil"
+
 )
 
 var dummyOrganization = v3.Organization{
@@ -32,7 +31,6 @@ func SetupOrganizationTestEndpoints() {
 	http.HandleFunc("/snapshot", HandleTestOrganizationResponse)
 	http.HandleFunc("/sks-cluster", HandleTestOrganizationResponse)
 	http.HandleFunc("/block-storage", HandleTestOrganizationResponse)
-	http.HandleFunc("/api-key", HandleTestOrganizationResponse)
 }
 
 func HandleTestOrganizationResponse(w http.ResponseWriter, r *http.Request) {
@@ -58,22 +56,6 @@ func TestOrganizationDummyResponse(t *testing.T) {
 		(organization.Postcode != dummyOrganization.Postcode)) {
 		t.Fail()
 	}
-}
-
-func GetTestMetrics(t *testing.T) string {
-	resp, err := http.Get("http://localhost:9998/metrics")
-    if err != nil {
-        t.Errorf("http.Get() error: %v", err)
-    }
-    defer resp.Body.Close()
-
-    // Read the response body
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        t.Errorf("ioutil.ReadAll() error: %v", err)
-    }
-
-    return string(body)
 }
 
 func TestOrganizationMetricsExist(t *testing.T) {

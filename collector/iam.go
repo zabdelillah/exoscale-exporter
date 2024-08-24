@@ -1,4 +1,8 @@
 package collector
+/**
+ * Collects all things relating to IAM:
+ * 	- API Keys
+ */
 
 import (
 	"github.com/exoscale/egoscale/v3"
