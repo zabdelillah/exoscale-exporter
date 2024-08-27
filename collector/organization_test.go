@@ -25,7 +25,6 @@ var dummyOrganization = v3.Organization{
 func SetupOrganizationTestEndpoints() {
 	http.HandleFunc("/organization", HandleTestOrganizationResponse)
 	// Others
-	http.HandleFunc("/sos-buckets-usage", HandleTestOrganizationResponse)
 	http.HandleFunc("/snapshot", HandleTestOrganizationResponse)
 	http.HandleFunc("/block-storage", HandleTestOrganizationResponse)
 }
