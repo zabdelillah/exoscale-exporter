@@ -31,17 +31,16 @@ jobs:
     - name: Test
       run: go test -v ./collector
 
+    - name: Extract tag name
+      id: tag
+      run: |
+        echo ::set-output name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
 
     - name: Build
       run: |
         GOOS=${{ matrix.os }}
         GOARCH=${{ matrix.arch }} 
-        go build -o exoscale-exporter-${{ matrix.os }}-${{ matrix.arch }}-${{ github.ref }} -v ./
-
-    - name: Extract tag name
-      id: tag
-      run: |
-        echo ::set-output name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
+        go build -o exoscale-exporter-${{ matrix.os }}-${{ matrix.arch }}-${{ steps.tag.outputs.RELEASE_VERSION }} -v ./
 
     - name: Upload artifact
       uses: softprops/action-gh-release@v1
