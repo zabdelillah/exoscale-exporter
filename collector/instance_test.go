@@ -38,10 +38,25 @@ var dummyInstancePoolResponse = v3.ListInstancePoolsResponse {
     },
 }
 
+var dummyAntiAffinityGroupResponse = v3.ListAntiAffinityGroupsResponse {
+    AntiAffinityGroups: []v3.AntiAffinityGroup{
+        {
+            Name: "dummyAntiAffinityGroup",
+            Instances: []v3.Instance{
+                {
+                    Name: "dummyInstanceName",
+                    ID: "dummyInstanceID",
+                },
+            },
+        },
+    },
+}
+
 func SetupInstanceTestEndpoints() {
     http.HandleFunc("/instance", HandleTestInstanceResponse)
     http.HandleFunc("/instance-type/dummy", HandleTestDummyInstanceTypeResponse)
     http.HandleFunc("/instance-pool", HandleTestInstancePoolResponse)
+    http.HandleFunc("/anti-affinity-group", HandleTestAntiAffinityGroupResponse)
 }
 
 func HandleTestInstanceResponse(w http.ResponseWriter, r *http.Request) {
@@ -56,6 +71,10 @@ func HandleTestInstancePoolResponse(w http.ResponseWriter, r *http.Request) {
     WriteObjectToResponse(w, r, dummyInstancePoolResponse)
 }
 
+func HandleTestAntiAffinityGroupResponse(w http.ResponseWriter, r *http.Request) {
+    WriteObjectToResponse(w, r, dummyAntiAffinityGroupResponse)
+}
+
 func TestInstanceMetricsExist(t *testing.T) {
     metrics := GetTestMetrics(t)
 
@@ -65,6 +84,7 @@ func TestInstanceMetricsExist(t *testing.T) {
         "exoscale_instance_cpus",
         "exoscale_instance_gpus",
         "exoscale_instance_memory",
+        "exoscale_anti_affinity_group",
     }
 
     _, errs := CheckMetricsExist(t, metricsToCheck, metrics)

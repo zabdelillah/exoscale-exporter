@@ -16,6 +16,7 @@ type InstancesPrometheusMetricsCollector struct {
     CPUs *prometheus.Desc
     GPUs *prometheus.Desc
     Memory *prometheus.Desc
+    AntiAffinityGroup *prometheus.Desc
 }
 
 func NewInstancesPrometheusMetricsCollector(ctx context.Context, cli v3.Client) *InstancesPrometheusMetricsCollector {
@@ -53,6 +54,11 @@ func NewInstancesPrometheusMetricsCollector(ctx context.Context, cli v3.Client) 
             "Exoscale Instance",
             []string{"id", "name"}, nil,
         ),
+        AntiAffinityGroup: prometheus.NewDesc(
+            "exoscale_anti_affinity_group",
+            "Exoscale Instance",
+            []string{"name", "instance_id", "instance_name"}, nil,
+        ),
     }
 }
 
@@ -63,6 +69,7 @@ func (collector *InstancesPrometheusMetricsCollector) Describe(channel chan<- *p
     channel <- collector.Memory
     channel <- collector.InstancePool
     channel <- collector.InstancePoolSize
+    channel <- collector.AntiAffinityGroup
 }
 
 func (collector *InstancesPrometheusMetricsCollector) Collect(channel chan<- prometheus.Metric) {
@@ -155,6 +162,21 @@ func (collector *InstancesPrometheusMetricsCollector) Collect(channel chan<- pro
             )
         instancePoolCounter.Inc()
     }
+
+    antiAffinityGroupResponse, err := collector.Client.ListAntiAffinityGroups(collector.Context)
+    for _, group := range antiAffinityGroupResponse.AntiAffinityGroups {
+        for _, instance := range group.Instances {
+            channel <- prometheus.MustNewConstMetric(
+                collector.AntiAffinityGroup,
+                prometheus.CounterValue,
+                float64(1),
+                string(group.Name),
+                string(instance.ID),
+                string(instance.Name),
+            )
+        }
+    }
+
 
     channel <- instanceCounter
     channel <- instancePoolCounter

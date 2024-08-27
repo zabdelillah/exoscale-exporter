@@ -26,7 +26,7 @@ Upon performing a hit to the `/metrics` endpoint, the Exoscale API will be queri
 - [x] Load Balancers
 - [x] VPCs
 - [x] SSH Keys
-- [ ] Affinity Groups
+- [x] Anti-Affinity Groups
 
 ## Repository To-Dos
 - [ ] Complete Unit Tests
