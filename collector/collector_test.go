@@ -68,6 +68,7 @@ func setupWebServers(m *testing.M) int {
 	SetupOrganizationTestEndpoints()
 	SetupIAMTestEndpoints()
 	SetupInstanceTestEndpoints()
+	SetupSKSTestEndpoints()
 
 	PrepareCollector(context.Background(), dummyExoscaleClient)
 

@@ -27,7 +27,6 @@ func SetupOrganizationTestEndpoints() {
 	// Others
 	http.HandleFunc("/sos-buckets-usage", HandleTestOrganizationResponse)
 	http.HandleFunc("/snapshot", HandleTestOrganizationResponse)
-	http.HandleFunc("/sks-cluster", HandleTestOrganizationResponse)
 	http.HandleFunc("/block-storage", HandleTestOrganizationResponse)
 }
 
