@@ -40,12 +40,12 @@ jobs:
       run: |
         GOOS=${{ matrix.os }}
         GOARCH=${{ matrix.arch }} 
-        go build -o exoscale-exporter-${{ matrix.os }}-${{ matrix.arch }}-${{ steps.tag.outputs.RELEASE_VERSION }} -v ./
+        go build -o exoscale-exporter-${{ steps.tag.outputs.RELEASE_VERSION }}-${{ matrix.os }}-${{ matrix.arch }} -v ./
 
     - name: Upload artifact
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/v')
       with:
-        files: exoscale-exporter-${{ matrix.os }}-${{ matrix.arch }}-${{ steps.tag.outputs.RELEASE_VERSION }}
+        files: exoscale-exporter-${{ steps.tag.outputs.RELEASE_VERSION }}-${{ matrix.os }}-${{ matrix.arch }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
