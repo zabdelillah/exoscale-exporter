@@ -65,9 +65,10 @@ func CheckMetricsExist(t *testing.T, metricsToCheck []string, metrics string) ([
 }
 
 func setupWebServers(m *testing.M) int {
-	SetupOrganizationTestEndpoints()
+	SetupBlockStorageTestEndpoints()
 	SetupIAMTestEndpoints()
 	SetupInstanceTestEndpoints()
+	SetupOrganizationTestEndpoints()
 	SetupSOSTestEndpoints()
 	SetupSKSTestEndpoints()
 
