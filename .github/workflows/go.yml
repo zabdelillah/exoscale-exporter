@@ -37,10 +37,7 @@ jobs:
         echo ::set-output name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
 
     - name: Build
-      run: |
-        GOOS=${{ matrix.os }}
-        GOARCH=${{ matrix.arch }} 
-        go build -o exoscale-exporter-${{ steps.tag.outputs.RELEASE_VERSION }}-${{ matrix.os }}-${{ matrix.arch }} -v ./
+      run: GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -o exoscale-exporter-${{ steps.tag.outputs.RELEASE_VERSION }}-${{ matrix.os }}-${{ matrix.arch }} -v ./
 
     - name: Upload artifact
       uses: softprops/action-gh-release@v1

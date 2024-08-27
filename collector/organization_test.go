@@ -22,9 +22,19 @@ var dummyOrganization = v3.Organization{
 	Postcode: "G0T 3ST5",
 }
 
+var dummySSHKey = v3.ListSSHKeysResponse{
+	SSHKeys: []v3.SSHKey {
+		{
+			Fingerprint: "dummySSHKeyFingerprint",
+			Name: "dummySSHKeyName",
+		},
+	},
+}
+
+
 func SetupOrganizationTestEndpoints() {
 	http.HandleFunc("/organization", HandleTestOrganizationResponse)
-	
+	http.HandleFunc("/ssh-key", HandleTestSSHKeyResponse)
 }
 
 func HandleTestOrganizationResponse(w http.ResponseWriter, r *http.Request) {
@@ -32,6 +42,10 @@ func HandleTestOrganizationResponse(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(dummyOrganization); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func HandleTestSSHKeyResponse(w http.ResponseWriter, r *http.Request) {
+    WriteObjectToResponse(w, r, dummySSHKey)
 }
 
 // Tests that the local http server works and we're injecting
@@ -70,5 +84,14 @@ func TestOrganizationMetricsExist(t *testing.T) {
 
     if !strings.Contains(metrics, usage_metric) {
         t.Errorf("Metric %s not found", "exoscale_organization_balance")
+    }
+
+    metricsToCheck := []string {
+        "exoscale_ssh_key",
+    }
+
+    _, errs := CheckMetricsExist(t, metricsToCheck, metrics)
+    for i := range(errs) {
+        t.Errorf("Instance Metric Check Failed: %v", errs[i])
     }
 }

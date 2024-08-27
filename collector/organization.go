@@ -12,6 +12,7 @@ type OrganizationPrometheusMetricsCollector struct {
     Client v3.Client
     Balance *prometheus.Desc
     Usage *prometheus.Desc
+    SSHKey *prometheus.Desc
 }
 
 func NewOrganizationPrometheusMetricsCollector(ctx context.Context, cli v3.Client) *OrganizationPrometheusMetricsCollector {
@@ -28,12 +29,18 @@ func NewOrganizationPrometheusMetricsCollector(ctx context.Context, cli v3.Clien
             "Current balance on exoscale organization",
             []string{"organization_id", "organization_name"}, nil,
         ),
+        SSHKey: prometheus.NewDesc(
+            "exoscale_ssh_key",
+            "SSH Keys stored on Exoscale",
+            []string{"fingerprint", "name"}, nil,
+        ),
     }
 }
 
 func (collector *OrganizationPrometheusMetricsCollector) Describe(channel chan<- *prometheus.Desc) {
     channel <- collector.Balance
     channel <- collector.Usage
+    channel <- collector.SSHKey
 }
 
 func (collector *OrganizationPrometheusMetricsCollector) Collect(channel chan<- prometheus.Metric) {
@@ -58,4 +65,15 @@ func (collector *OrganizationPrometheusMetricsCollector) Collect(channel chan<- 
         organization.ID.String(), 
         organization.Name,
     )
+
+    sshKeys, err := collector.Client.ListSSHKeys(collector.Context)
+    for _, sshKey := range(sshKeys.SSHKeys) {
+        channel <- prometheus.MustNewConstMetric(
+            collector.SSHKey,
+            prometheus.GaugeValue,
+            float64(1),
+            sshKey.Fingerprint, 
+            sshKey.Name,
+        )
+    }
 }
