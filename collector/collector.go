@@ -44,6 +44,9 @@ func PrepareCollector(ctx context.Context, cli *v3.Client) {
 	registry.MustRegister(NewDNSDomainPrometheusMetricsCollector(ctx, *cli))
 	// Exoscale Networking Metrics
 	registry.MustRegister(NewLoadBalancerPrometheusMetricsCollector(ctx, *cli))
+	registry.MustRegister(NewElasticIPPrometheusMetricsCollector(ctx, *cli))
+	registry.MustRegister(NewPrivateNetworkPrometheusMetricsCollector(ctx, *cli))
+	registry.MustRegister(NewSecurityGroupPrometheusMetricsCollector(ctx, *cli))
 	
 	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 }
