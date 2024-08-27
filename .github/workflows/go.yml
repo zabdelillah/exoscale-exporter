@@ -15,10 +15,11 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu, macos, windows]
+        os: [linux, darwin, windows]
+        arch: [amd64, arm64]
     steps:
     - uses: actions/checkout@v4
 
@@ -30,13 +31,21 @@ jobs:
     - name: Test
       run: go test -v ./collector
 
+    - name: Extract tag name
+      id: tag
+      run: |
+        echo ::set-output name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
+
     - name: Build
-      run: go build -o exoscale-exporter-${{ matrix.os }} -v ./
+      run: |
+        GOOS=${{ matrix.os }}
+        GOARCH=${{ matrix.arch }} 
+        go build -o exoscale-exporter-${{ steps.tag.outputs.RELEASE_VERSION }}-${{ matrix.os }}-${{ matrix.arch }} -v ./
 
     - name: Upload artifact
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/v')
       with:
-        files: exoscale-exporter-${{ matrix.os }}
+        files: exoscale-exporter-${{ steps.tag.outputs.RELEASE_VERSION }}-${{ matrix.os }}-${{ matrix.arch }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
