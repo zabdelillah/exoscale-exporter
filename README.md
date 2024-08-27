@@ -7,7 +7,8 @@ To launch the compiled binary, API Keys from Exoscale are required. The same env
 - `EXOSCALE_API_KEY`
 - `EXOSCALE_API_SECRET`
 
-As this is a very new repository, the port of `:9999` has been hardcoded into the main goroutine. 
+The `listen` flag can be used to drive what port to listen on. By default, port `:9999` will
+be used.
 
 Upon performing a hit to the `/metrics` endpoint, the Exoscale API will be queried and formatted for Prometheus. There is no caching directly within this binary.
 
@@ -20,10 +21,10 @@ Upon performing a hit to the `/metrics` endpoint, the Exoscale API will be queri
 - [x] SOS Buckets
 - [ ] DBaaS
 - [x] DNS
-- [ ] Security Groups
-- [ ] Elastic IPs
-- [ ] Load Balancers
-- [ ] VPCs
+- [x] Security Groups
+- [x] Elastic IPs
+- [x] Load Balancers
+- [x] VPCs
 - [ ] SSH Keys
 - [ ] Affinity Groups
 
