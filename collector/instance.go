@@ -67,7 +67,7 @@ func (collector *InstancesPrometheusMetricsCollector) Describe(channel chan<- *p
 
 func (collector *InstancesPrometheusMetricsCollector) Collect(channel chan<- prometheus.Metric) {
     response, err := collector.Client.ListInstances(collector.Context)
-    counter := prometheus.NewCounter(prometheus.CounterOpts{
+    instanceCounter := prometheus.NewCounter(prometheus.CounterOpts{
         Name: "exoscale_instances_count",
         Help: "Exoscale Instance Count",
     })
@@ -77,7 +77,6 @@ func (collector *InstancesPrometheusMetricsCollector) Collect(channel chan<- pro
     }
 
     for _, instance := range response.Instances {
-        // instance, _ := collector.Client.GetInstance(collector.Context, instanceInfo.ID)
         instanceType, _ := collector.Client.GetInstanceType(collector.Context, instance.InstanceType.ID)
         // for _, zone := range instance.InstanceType.Zones {
             zone := "exoscale" // Unknown how to get instance zones for the moment
@@ -121,7 +120,7 @@ func (collector *InstancesPrometheusMetricsCollector) Collect(channel chan<- pro
                 metadata...,
             )
 
-            counter.Inc()
+            instanceCounter.Inc()
         // }
     }
 
@@ -157,5 +156,6 @@ func (collector *InstancesPrometheusMetricsCollector) Collect(channel chan<- pro
         instancePoolCounter.Inc()
     }
 
+    channel <- instanceCounter
     channel <- instancePoolCounter
 }
