@@ -69,6 +69,7 @@ func setupWebServers(m *testing.M) int {
 	SetupDNSTestEndpoints()
 	SetupIAMTestEndpoints()
 	SetupInstanceTestEndpoints()
+	SetupNetworkingTestEndpoints()
 	SetupOrganizationTestEndpoints()
 	SetupSOSTestEndpoints()
 	SetupSKSTestEndpoints()

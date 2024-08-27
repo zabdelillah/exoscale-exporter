@@ -19,7 +19,7 @@ Upon performing a hit to the `/metrics` endpoint, the Exoscale API will be queri
 - [x] Block Storage Volumes
 - [x] SOS Buckets
 - [ ] DBaaS
-- [ ] DNS
+- [x] DNS
 - [ ] Security Groups
 - [ ] Elastic IPs
 - [ ] Load Balancers
